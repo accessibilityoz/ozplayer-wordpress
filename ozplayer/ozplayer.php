@@ -33,6 +33,9 @@ add_option("ozplayer_transcript_css",'/ozplayer/transcript.css');
 add_option("ozplayer_lang", 'en');
 add_option("ozplayer_color", 'blue');
 add_option("ozplayer_transcript_heading","Video transcript");
+add_option("ozplayer_transcript_open",0);
+add_option("ozplayer_captions_on",0);
+add_option("ozplayer_ad_on",0);
 
 /**
  * The Video shortcode.
@@ -119,7 +122,10 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		'width'    => 640,
 		'height'   => 360,
 		'captions' => '',
-		'transcript' => ''
+		'transcript' => '',
+		'transcript_open' => get_option('ozplayer_transcript_open'),
+		'ad_on' => get_option('ozplayer_ad_on'),
+		'captions_on' => get_option('ozplayer_captions_on')
 	);
 
 	foreach ( $default_types as $type )
@@ -246,18 +252,30 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 	$transcript_html = '';
 	$transcript_attr = '';
 	if (! empty($captions)) {
-		$html .= sprintf('<track src="%s" kind="captions" srclang="%s"/>', $captions, $lang);
+		$yesno = '';
+		if ($captions_on == 1 || $captions_on == "yes") {
+			$yesno = 'default="default"';
+		}
+		$html .= sprintf('<track src="%s" kind="captions" srclang="%s" %s/>', $captions, $lang, $yesno);
 	}
 	if (! empty($transcript)) {
 		$html .= sprintf('<track src="%s" kind="metadata" data-kind="transcript" srclang="%s"/>', $transcript, $lang);
-		$transcript_html = sprintf('<details class="ozplayer-expander"><summary>%s</summary><div id="transcript-%s" class="ozplayer-transcript"></div></details>',$transcript_heading,$id);
+		$open='';
+		if ($transcript_open == 1 || $transcript_open == "yes") {
+			$open = 'open="open"';
+		}
+		$transcript_html = sprintf('<details class="ozplayer-expander" %s><summary>%s</summary><div id="transcript-%s" class="ozplayer-transcript"></div></details>',$open, $transcript_heading,$id);
 		$transcript_attr = sprintf('data-transcript="transcript-%s"',$id);
 	}
 	$html .= "</video>";
 
 	$ad_html = '';
 	if (! empty($mp3) or ! empty($ogg)) {
-		$ad_html = '<audio preload="none">';
+		$ad = '';
+		if ($ad_on == 1 || $ad_on == "yes") {
+			$ad = 'data-default="default"';
+		}
+		$ad_html = sprintf('<audio preload="none" %s>', $ad);
 		if (! empty($mp3)) {
 			$ad_html .= sprintf('<source src="%s" type="audio/mp3" />',$mp3);
 		}
@@ -283,6 +301,88 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 	return apply_filters( 'ozp_video_shortcode', $html, $atts, $video, $post_id, $library );
 }
 add_shortcode( 'ozplayer', 'ozp_video_shortcode' );
+remove_shortcode('video');
+add_shortcode( 'video', 'ozp_video_shortcode' );
+
+add_action( 'admin_menu', 'ozp_plugin_menu' );
+
+function ozp_plugin_menu() {
+	add_options_page( 'OzPlayer Options', 'OzPlayer', 'manage_options', 'ozplayer-options', 'ozp_plugin_options' );
+	add_action( 'admin_init', 'register_ozp_settings' );
+
+}
+
+function register_ozp_settings() { // whitelist options
+  register_setting( 'ozplayer-group', 'ozplayer_base' );
+  register_setting( 'ozplayer-group', 'ozplayer_color' );
+  register_setting( 'ozplayer-group', 'ozplayer_transcript_css' );
+  register_setting( 'ozplayer-group', 'ozplayer_transcript_heading' );
+  register_setting( 'ozplayer-group', 'ozplayer_config_js' );
+  register_setting( 'ozplayer-group', 'ozplayer_transcript_open' );
+  register_setting( 'ozplayer-group', 'ozplayer_captions_on' );
+  register_setting( 'ozplayer-group', 'ozplayer_ad_on' );
+}
+
+function ozp_plugin_options() {
+	if ( !current_user_can( 'manage_options' ) )  {
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
+?>
+
+<div class="wrap">
+<h2>OzPlayer Options</h2>
+<form method="post" action="options.php">
+<?php settings_fields( 'ozplayer-group' ); ?>
+<?php do_settings_sections( 'ozplayer-group' ); ?>
+
+<table class="form-table">
+        <tr valign="top">
+        <th scope="row">OzPlayer base URL</th>
+        <td><input type="text" name="ozplayer_base" value="<?php echo esc_attr( get_option('ozplayer_base') ); ?>" /></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">config.js URL</th>
+        <td><input type="text" name="ozplayer_config_js" value="<?php echo esc_attr( get_option('ozplayer_config_js') ); ?>" /></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">Transcript CSS URL</th>
+        <td><input type="text" name="ozplayer_transcript_css" value="<?php echo esc_attr( get_option('ozplayer_transcript_css') ); ?>" /></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">OzPlayer highlight color</th>
+        <td><select name="ozplayer_color" value="<?php echo esc_attr( get_option('ozplayer_color') ); ?>">
+        	<option <?php selected('red',get_option('ozplayer_color')); ?>>red</option>
+        	<option <?php selected('blue',get_option('ozplayer_color')); ?>>blue</option>
+        	<option <?php selected('green',get_option('ozplayer_color')); ?>>green</option>
+        	<option <?php selected('orange',get_option('ozplayer_color')); ?>>orange</option>
+        	<option <?php selected('pink',get_option('ozplayer_color')); ?>>pink</option>
+        	<option <?php selected('purple',get_option('ozplayer_color')); ?>>purple</option>
+        	<option <?php selected('yellow',get_option('ozplayer_color')); ?>>yellow</option>
+        </select></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">Transcript heading</th>
+        <td><input type="text" name="ozplayer_transcript_heading" value="<?php echo esc_attr( get_option('ozplayer_transcript_heading') ); ?>" /></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">Transcript open by default?</th>
+        <td><input type="checkbox" name="ozplayer_transcript_open" value="1"<?php checked( 1 == get_option('ozplayer_transcript_open') ); ?> /></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">Captions on by default?</th>
+        <td><input type="checkbox" name="ozplayer_captions_on" value="1"<?php checked( 1 == get_option('ozplayer_captions_on') ); ?> /></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">Audio descriptions on by default?</th>
+        <td><input type="checkbox" name="ozplayer_ad_on" value="1"<?php checked( 1 == get_option('ozplayer_ad_on') ); ?> /></td>
+        </tr>
+</table>
+<?php submit_button(); ?>
+</form>
+</div>
+<?php
+}
+
 
 
 ?>
