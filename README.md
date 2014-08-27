@@ -41,7 +41,7 @@ The following arguments are available:
 
 | Name | Description
 | ---- | ------------
-| src | Source URL for the video. Recommend only using this for YouTube videos
+| src | Source URL for the video. Recommend only using this for YouTube videos, but it works the same as the built-in [video] shortcode
 | mp4 | URL for the MP4 version of the video
 | webm | URL for the WebM version of the video
 | mp3 | URL for the MP3 version of the audio descriptions
