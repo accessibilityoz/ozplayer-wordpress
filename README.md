@@ -40,6 +40,7 @@ an adaptation of the original built-in video support.
 The following arguments are available:
 
 | Name | Description
+| ---- | ------------
 | src | Source URL for the video. Recommend only using this for YouTube videos
 | mp4 | URL for the MP4 version of the video
 | webm | URL for the WebM version of the video
