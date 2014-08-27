@@ -16,9 +16,11 @@ WordPress site's top-level directory, and then made a symlink to 'ozplayer'.
 
 e.g.:
 
-  cd /var/www/html
-  unzip ~/OzPlayer-1.7-distrib.zip
-  ln -s OzPlayer-1.7-distrib ozplayer
+```
+cd /var/www/html
+unzip ~/OzPlayer-1.7-distrib.zip
+ln -s OzPlayer-1.7-distrib ozplayer
+```
 
 But if you put it elsewhere that's fine, just go in to the OzPlayer settings page
 in the WordPress admin and set the "OzPlayer base URL" appropriately.
@@ -27,3 +29,30 @@ You'll also need to set up a config.js file and provide the URL for that. Likewi
 a CSS file with the transcript CSS.
 
 There's an example config.js included here. It assumes you're loading jQuery.
+
+There are a number of options available in the admin settings page. Most of these
+are defaults that can be over-ridden in the shortcode if you need to.
+
+Two shortcodes are provided, "[ozplayer]" and "[video]". We over-ride the system
+default "[video]" shortcode but are largely backwards-compatible -- this plugin is
+an adaptation of the original built-in video support.
+
+The following arguments are available:
+
+| Name | Description
+| src | Source URL for the video. Recommend only using this for YouTube videos
+| mp4 | URL for the MP4 version of the video
+| webm | URL for the WebM version of the video
+| mp3 | URL for the MP3 version of the audio descriptions
+| ogg | URL for the OGG Vorbis version of the audio descriptions
+| transcript | URL for the VTT file containing transcript extras
+| captions | URL for the VTT file containing the captions
+| color | Highlight color. See admin panel for options
+| lang | Language. Right now only 'en' is supported but feel free to add translations in ozplayer-lang
+| poster | URL for the poster image
+| width | Width of the video. Will be scaled down if this is wider than the content area width
+| height | Height of the video. Will be scaled down if the video is too wide for the content area, preserving the aspect ratio
+| transcript_open | Have the transcript visible? ("1" or "yes" for on, anything else for off)
+| captions_on | Turn on the captions? ("1" or "yes" for on, anything else for off)
+| ad_on | Turn on the audio descriptions? ("1" or "yes" for on, anything else for off)
+
