@@ -57,3 +57,4 @@ The following arguments are available:
 | captions_on | Turn on the captions? ("1" or "yes" for on, anything else for off)
 | ad_on | Turn on the audio descriptions? ("1" or "yes" for on, anything else for off)
 
+All but a video source (either the src, mp4, or webm values) are optional.
