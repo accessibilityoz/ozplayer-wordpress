@@ -222,6 +222,8 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		$attr_strings[] = $k . '="' . esc_attr( $v ) . '"';
 	}
 
+	$fallback_html='<div class="ozplayer-fallback"><ul>';
+	$falback_html .= sprintf('<img src="%s" alt=""/><ul>',$poster);
 	$html = '';
 	$html .= sprintf( '<video %s controls="controls" preload="none">', join( ' ', $attr_strings ) );
 
@@ -234,8 +236,10 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 
 			if ( 'src' === $fallback && preg_match( $yt_pattern, $src ) ) {
 				$type = array( 'type' => 'video/youtube' );
+				$fallback_html .= sprintf('<li><a href="%s">View on YouTube</a></li>', $src);
 			} else {
 				$type = wp_check_filetype( $$fallback, wp_get_mime_types() );
+				$fallback_html .= sprintf('<li><a href="%s">Download video</a></li>',$src);
 			}
 			$url = add_query_arg( '_', $instances, $$fallback );
 			$html .= sprintf( $source, $type['type'], esc_url( $url ) );
@@ -257,6 +261,7 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 			$yesno = 'default="default"';
 		}
 		$html .= sprintf('<track src="%s" kind="captions" srclang="%s" %s/>', $captions, $lang, $yesno);
+		$fallback_html .= sprintf('<li><a href="%s">Download captions</a></li>',$captions);
 	}
 	if (! empty($transcript)) {
 		$html .= sprintf('<track src="%s" kind="metadata" data-kind="transcript" srclang="%s"/>', $transcript, $lang);
@@ -267,7 +272,6 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		$transcript_html = sprintf('<details class="ozplayer-expander" %s><summary>%s</summary><div id="transcript-%s" class="ozplayer-transcript"></div></details>',$open, $transcript_heading,$id);
 		$transcript_attr = sprintf('data-transcript="transcript-%s"',$id);
 	}
-	$html .= "</video>";
 
 	$ad_html = '';
 	if (! empty($mp3) or ! empty($ogg)) {
@@ -278,12 +282,17 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		$ad_html = sprintf('<audio preload="none" %s>', $ad);
 		if (! empty($mp3)) {
 			$ad_html .= sprintf('<source src="%s" type="audio/mp3" />',$mp3);
+			$fallback_html .= sprintf('<li><a href="%s">Download audio descriptions (MP3)</a></li>',$mp3);
 		}
 		if (! empty($ogg)) {
 			$ad_html .= sprintf('<source src="%s" type="audio/ogg" />',$ogg);
+			$fallback_html .= sprintf('<li><a href="%s">Download audio descriptions (OGG)</a></li>',$ogg);
 		}
 		$ad_html .= "</audio>";
 	}
+
+	$fallback_html .= '</ul></div>';
+	$html .= $fallback_html . "</video>";
 
 	$html = sprintf( '<figure class="ozplayer-container"><div id="%s" class="ozplayer" data-controls="stack" %s>%s %s</div>%s</figure>', $id, $transcript_attr, $html, $ad_html, $transcript_html );
 
