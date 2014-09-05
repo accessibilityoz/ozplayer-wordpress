@@ -250,6 +250,7 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		if ( false !== strpos( $content, "\n" ) )
 			$content = str_replace( array( "\r\n", "\n", "\t" ), '', $content );
 
+		$content = preg_replace('#kind=.subtitles.#','kind="captions"',$content);
 		$html .= trim( $content );
 	}
 
