@@ -242,8 +242,8 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 				$type = wp_check_filetype( $$fallback, wp_get_mime_types() );
 				$fallback_html .= sprintf('<li><a href="%s">Download video</a></li>',$src);
 			}
-			$url = add_query_arg( '_', $instances, $$fallback );
-			$html .= sprintf( $source, $type['type'], esc_url( $url ) );
+#			$url = add_query_arg( '_', $instances, $$fallback );
+			$html .= sprintf( $source, $type['type'], esc_url( $$fallback ) );
 		}
 	}
 
