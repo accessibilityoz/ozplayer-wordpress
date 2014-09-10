@@ -148,7 +148,8 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		}
 	}
 
-	$yt_pattern = '#^https?://(:?www\.)?(:?youtube\.com/watch|youtu\.be/)#';
+#	$yt_pattern = '#^https?://(:?www\.)?(:?youtube\.com/watch|youtu\.be/)#';
+	$yt_pattern = '#//(:?www\.)?(:?youtube\.com/watch|youtu\.be/)#';
 
 	$primary = false;
 	if ( ! empty( $src ) ) {
