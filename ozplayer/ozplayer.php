@@ -236,7 +236,7 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 				$fileurl = $$fallback;
 
 			if ( 'src' === $fallback && preg_match( $yt_pattern, $src ) ) {
-				$type = array( 'type' => 'video/youtube' );
+				$type = array( 'type' => 'video/x-youtube' );
 				$fallback_html .= sprintf('<li><a href="%s">View on YouTube</a></li>', $src);
 			} else {
 				$type = wp_check_filetype( $$fallback, wp_get_mime_types() );
