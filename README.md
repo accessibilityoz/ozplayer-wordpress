@@ -54,6 +54,7 @@ The following arguments are available:
 | width | Width of the video. Will be scaled down if this is wider than the content area width
 | height | Height of the video. Will be scaled down if the video is too wide for the content area, preserving the aspect ratio
 | transcript_open | Have the transcript visible? ("1" or "yes" for on, anything else for off)
+| transcript_on | Should the transcript be on at all? ("1" or "yes" for on, anything else for off)
 | captions_on | Turn on the captions? ("1" or "yes" for on, anything else for off)
 | ad_on | Turn on the audio descriptions? ("1" or "yes" for on, anything else for off)
 

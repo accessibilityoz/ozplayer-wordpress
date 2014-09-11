@@ -36,6 +36,7 @@ add_option("ozplayer_transcript_heading","Video transcript");
 add_option("ozplayer_transcript_open",0);
 add_option("ozplayer_captions_on",0);
 add_option("ozplayer_ad_on",0);
+add_option("ozplayer_transcript_on",1);
 
 /**
  * The Video shortcode.
@@ -123,6 +124,7 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		'height'   => 360,
 		'captions' => '',
 		'transcript' => '',
+		'transcript_on' => get_option('ozplayer_transcript_on'),
 		'transcript_open' => get_option('ozplayer_transcript_open'),
 		'ad_on' => get_option('ozplayer_ad_on'),
 		'captions_on' => get_option('ozplayer_captions_on')
@@ -264,15 +266,17 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		}
 		$html .= sprintf('<track src="%s" kind="captions" srclang="%s" %s/>', $captions, $lang, $yesno);
 		$fallback_html .= sprintf('<li><a href="%s">Download captions</a></li>',$captions);
+		if ($transcript_on == 1 || $transcript_on == "yes" ) {
+			$open='';
+			if ($transcript_open == 1 || $transcript_open == "yes") {
+				$open = 'open="open"';
+			}
+			$transcript_html = sprintf('<details class="ozplayer-expander" %s><summary>%s</summary><div id="transcript-%s" class="ozplayer-transcript"></div></details>',$open, $transcript_heading,$id);
+			$transcript_attr = sprintf('data-transcript="transcript-%s"',$id);
+		}
 	}
 	if (! empty($transcript)) {
 		$html .= sprintf('<track src="%s" kind="metadata" data-kind="transcript" srclang="%s"/>', $transcript, $lang);
-		$open='';
-		if ($transcript_open == 1 || $transcript_open == "yes") {
-			$open = 'open="open"';
-		}
-		$transcript_html = sprintf('<details class="ozplayer-expander" %s><summary>%s</summary><div id="transcript-%s" class="ozplayer-transcript"></div></details>',$open, $transcript_heading,$id);
-		$transcript_attr = sprintf('data-transcript="transcript-%s"',$id);
 	}
 
 	$ad_html = '';
@@ -332,6 +336,7 @@ function register_ozp_settings() { // whitelist options
   register_setting( 'ozplayer-group', 'ozplayer_transcript_open' );
   register_setting( 'ozplayer-group', 'ozplayer_captions_on' );
   register_setting( 'ozplayer-group', 'ozplayer_ad_on' );
+  register_setting( 'ozplayer-group', 'ozplayer_transcript_on');
 }
 
 function ozp_plugin_options() {
@@ -378,6 +383,10 @@ function ozp_plugin_options() {
         <tr valign="top">
         <th scope="row">Transcript open by default?</th>
         <td><input type="checkbox" name="ozplayer_transcript_open" value="1"<?php checked( 1 == get_option('ozplayer_transcript_open') ); ?> /></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">Transcript on default?</th>
+        <td><input type="checkbox" name="ozplayer_transcript_on" value="1"<?php checked( 1 == get_option('ozplayer_transcript_on') ); ?> /></td>
         </tr>
         <tr valign="top">
         <th scope="row">Captions on by default?</th>
