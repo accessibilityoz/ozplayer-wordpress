@@ -300,7 +300,7 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 	$fallback_html .= '</ul></div>';
 	$html .= $fallback_html . "</video>";
 
-	$html = sprintf( '<figure class="ozplayer-container"><div id="%s" class="ozplayer" data-controls="stack" %s>%s %s</div>%s</figure>', $id, $transcript_attr, $html, $ad_html, $transcript_html );
+	$html = sprintf( '<figure id="%s-container" class="ozplayer-container"><div id="%s" class="ozplayer" data-responsive="%s-container" data-controls="stack" %s>%s %s</div>%s</figure>', $id, $id, $id, $transcript_attr, $html, $ad_html, $transcript_html );
 
 	/**
 	 * Filter the output of the video shortcode.
