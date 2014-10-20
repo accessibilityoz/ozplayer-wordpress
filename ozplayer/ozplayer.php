@@ -156,7 +156,8 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 	$primary = false;
 	if ( ! empty( $src ) ) {
 		if ( ! preg_match( $yt_pattern, $src ) ) {
-			$type = wp_check_filetype( $src, wp_get_mime_types() );
+			$tmp = preg_replace('/\?.*/', '', $src);
+			$type = wp_check_filetype( $tmp, wp_get_mime_types() );
 			if ( ! in_array( strtolower( $type['ext'] ), $default_types ) ) {
 				return sprintf( '<a class="wp-embedded-video" href="%s">%s</a>', esc_url( $src ), esc_html( $src ) );
 			}
@@ -166,7 +167,8 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 	} else {
 		foreach ( $default_types as $ext ) {
 			if ( ! empty( $$ext ) ) {
-				$type = wp_check_filetype( $$ext, wp_get_mime_types() );
+				$tmp = preg_replace('/\?.*/', '', $$ext);
+				$type = wp_check_filetype( $tmp, wp_get_mime_types() );
 				if ( strtolower( $type['ext'] ) === $ext )
 					$primary = true;
 			}
