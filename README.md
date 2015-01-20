@@ -37,6 +37,12 @@ Two shortcodes are provided, "[ozplayer]" and "[video]". We over-ride the system
 default "[video]" shortcode but are largely backwards-compatible -- this plugin is
 an adaptation of the original built-in video support.
 
+Here's an example, playing video from Amazon CloudFront. This is a direct copy from our website:
+
+```
+[ozplayer poster="/wp-content/uploads/2014/09/ozplayer-poster.png" mp4="http://dhjrqu8yhdp3e.cloudfront.net/media/ozplayer-small-3.mp4" webm="http://dhjrqu8yhdp3e.cloudfront.net/media/ozplayer.webm" captions="/wp-content/uploads/2014/08/ozplayer.vtt" transcript="/wp-content/uploads/2014/08/ozplayer-transcript.vtt" mp3="http://dhjrqu8yhdp3e.cloudfront.net/media/ozplayer.mp3" ogg="http://dhjrqu8yhdp3e.cloudfront.net/media/ozplayer.ogg"]
+```
+
 The following arguments are available:
 
 | Name | Description
