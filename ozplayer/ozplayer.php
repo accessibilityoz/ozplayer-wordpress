@@ -193,7 +193,7 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 	 */
 
     wp_enqueue_script('ozp-me',$ozplayer_base . "/ozplayer-core/mediaelement.min.js",null,null,true);
-    wp_enqueue_script('ozp-ozp',$ozplayer_base . "/ozplayer-core/ozplayer.min.js",array('ozp-me'),null,true);
+    wp_enqueue_script('ozp-ozp',$ozplayer_base . "/ozplayer-core/ozplayer.free.js",array('ozp-me'),null,true);
     wp_enqueue_script('ozp-lang',$ozplayer_base . "/ozplayer-lang/" . $lang . ".js",array('ozp-me','ozp-ozp'),null,true);
     wp_enqueue_script('ozp-config',$config_js,array('ozp-me','ozp-ozp','jquery'),null,true);
 
