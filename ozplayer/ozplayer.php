@@ -27,9 +27,9 @@
 
 defined('ABSPATH') or die("No script kiddies please!");
 
-add_option("ozplayer_base", '//ozplayer.global.ssl.fastly.net/1.9');
-add_option("ozplayer_config_js", '//ozplayer.global.ssl.fastly.net/1.9/config.js');
-add_option("ozplayer_transcript_css",'//ozplayer.global.ssl.fastly.net/1.9/transcript.css');
+add_option("ozplayer_base", '//ozplayer.global.ssl.fastly.net/2.0');
+add_option("ozplayer_config_js", '//ozplayer.global.ssl.fastly.net/2.0/config.js');
+add_option("ozplayer_transcript_css",'//ozplayer.global.ssl.fastly.net/2.0/transcript.css');
 add_option("ozplayer_lang", 'en');
 add_option("ozplayer_color", 'blue');
 add_option("ozplayer_transcript_heading","Video transcript");
