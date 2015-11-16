@@ -7,6 +7,8 @@ Note that while this plugin is released under GPLv2 the OzPlayer accessible
 video player is commercial software. Please see http://oz-player.com/ for
 information.
 
+The full OzPlayer documentation is available from http://a11yoz.com/ozp-docs
+
 This code is in an alpha state.
 
 To use, copy the "ozplayer" directory from this repository into your wp-plugins directory
