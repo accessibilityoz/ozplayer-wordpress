@@ -3,7 +3,7 @@
  * Plugin Name: OzPlayer
  * Plugin URI: http://oz-player.com
  * Description: OzPlayer support for WordPress
- * Version: 0.1
+ * Version: 0.2
  * Author: Matt McLeod
  * Author URI: http://accessibilityoz.com.au/
  * License: GPL2
@@ -37,6 +37,12 @@ add_option("ozplayer_transcript_open",0);
 add_option("ozplayer_captions_on",0);
 add_option("ozplayer_ad_on",0);
 add_option("ozplayer_transcript_on",1);
+
+function add_query_vars_filter( $vars ){
+  $vars[] = "audio_described";
+  return $vars;
+}
+add_filter( 'query_vars', 'add_query_vars_filter' );
 
 /**
  * The Video shortcode.
@@ -109,6 +115,7 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 	$default_types = wp_get_video_extensions();
 	$defaults_atts = array(
 		'src'      => '',
+		'ad_src'   => '',
 		'ogg'		=> '',
 		'mp3'      => '',
 		'mp4'      => '',
@@ -123,7 +130,9 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		'width'    => '1920',
 		'height'   => '1080',
 		'captions' => '',
+		'ad_captions' => '',
 		'transcript' => '',
+		'ad_transcript' => '',
 		'transcript_on' => get_option('ozplayer_transcript_on'),
 		'transcript_open' => get_option('ozplayer_transcript_open'),
 		'ad_on' => get_option('ozplayer_ad_on'),
@@ -135,6 +144,13 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 
 	$atts = shortcode_atts( $defaults_atts, $attr, 'video' );
 	extract( $atts );
+
+	if (! empty($ad_src) && get_query_var('audio_described', 'no') == 'yes') {
+		$src = $ad_src;
+		$transcript = $ad_transcript;
+		$captions = $ad_captions;
+	}
+
 
 	if ( is_admin() ) {
 		// shrink the video so it isn't huge in the admin
@@ -193,7 +209,7 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 	 */
 
     wp_enqueue_script('ozp-me',$ozplayer_base . "/ozplayer-core/mediaelement.min.js",null,null,true);
-    wp_enqueue_script('ozp-ozp',$ozplayer_base . "/ozplayer-core/ozplayer.free.js",array('ozp-me'),null,true);
+    wp_enqueue_script('ozp-ozp',$ozplayer_base . "/ozplayer-core/ozplayer.min.js",array('ozp-me'),null,true);
     wp_enqueue_script('ozp-lang',$ozplayer_base . "/ozplayer-lang/" . $lang . ".js",array('ozp-me','ozp-ozp'),null,true);
     wp_enqueue_script('ozp-config',$config_js,array('ozp-me','ozp-ozp','jquery'),null,true);
 
@@ -297,12 +313,16 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 			$fallback_html .= sprintf('<li><a href="%s">Download audio descriptions (OGG)</a></li>',$ogg);
 		}
 		$ad_html .= "</audio>";
+	} else {
+		if ( ! empty($ad_src)) {
+			$ad_html = '<audio data-on="' . get_permalink() . '?audio_described=yes" data-off="' . get_permalink() . '?audio_described=no"></audio>';
+		}
 	}
 
 	$fallback_html .= '</ul></div>';
 	$html .= $fallback_html . "</video>";
 
-	$html = sprintf( '<figure id="%s-container" class="ozplayer-container"><div id="%s" class="ozplayer" data-responsive="%s-container" data-controls="stack" %s>%s %s</div>%s</figure>', $id, $id, $id, $transcript_attr, $html, $ad_html, $transcript_html );
+	$html = sprintf( '<figure id="%s-container" class="ozplayer-container"><div id="%s" class="ozplayer" data-responsive="%s-container" data-controls="row" %s>%s %s</div>%s</figure>', $id, $id, $id, $transcript_attr, $html, $ad_html, $transcript_html );
 
 	/**
 	 * Filter the output of the video shortcode.
