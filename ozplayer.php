@@ -27,9 +27,10 @@
 
 defined('ABSPATH') or die("No script kiddies please!");
 
-add_option("ozplayer_base", '//ozplayer.global.ssl.fastly.net/2.0');
-add_option("ozplayer_config_js", '//ozplayer.global.ssl.fastly.net/2.0/config.js');
-add_option("ozplayer_transcript_css",'//ozplayer.global.ssl.fastly.net/2.0/transcript.css');
+add_option("ozplayer_base", '//ozplayer-commercial.global.ssl.fastly.net/3.0');
+add_option("ozplayer_config_js", '//ozplayer.global.ssl.fastly.net/3.0/config.js');
+add_option("ozplayer_transcript_css",'//ozplayer.global.ssl.fastly.net/3.0/transcript.css');
+add_option("ozplayer_commercial",0);
 add_option("ozplayer_lang", 'en');
 add_option("ozplayer_color", 'blue');
 add_option("ozplayer_transcript_heading","Video transcript");
@@ -123,6 +124,7 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 		'lang'      => get_option('ozplayer_lang'),
 		'color'      => get_option('ozplayer_color'),
 		'transcript_css' => get_option('ozplayer_transcript_css'),
+		'commercial' => get_option('ozplayer_commercial'),
 		'poster'   => '',
 		'loop'     => '',
 		'autoplay' => '',
@@ -208,8 +210,16 @@ function ozp_video_shortcode( $attr, $content = '' ) {
 	 * Queue up the OzPlayer-related scripts and CSS
 	 */
 
+	if (! $commercial) {
+		$ozplayer_base = "https://ozplayer.global.ssl.fastly.net/3.0";
+		$ozplayer_script = "ozplayer.free.js";
+	} else {
+		$ozplayer_script = "ozplayer.min.js";
+	}
+
     wp_enqueue_script('ozp-me',$ozplayer_base . "/ozplayer-core/mediaelement.min.js",null,null,true);
-    wp_enqueue_script('ozp-ozp',$ozplayer_base . "/ozplayer-core/ozplayer.min.js",array('ozp-me'),null,true);
+    wp_enqueue_script('ozp-ozp',$ozplayer_base . "/ozplayer-core/" . $ozplayer_script,array('ozp-me'),null,true);
+
     wp_enqueue_script('ozp-lang',$ozplayer_base . "/ozplayer-lang/" . $lang . ".js",array('ozp-me','ozp-ozp'),null,true);
     wp_enqueue_script('ozp-config',$config_js,array('ozp-me','ozp-ozp','jquery'),null,true);
 
@@ -359,6 +369,7 @@ function register_ozp_settings() { // whitelist options
   register_setting( 'ozplayer-group', 'ozplayer_captions_on' );
   register_setting( 'ozplayer-group', 'ozplayer_ad_on' );
   register_setting( 'ozplayer-group', 'ozplayer_transcript_on');
+  register_setting( 'ozplayer-group', 'ozplayer_commercial');
 }
 
 function ozp_plugin_options() {
@@ -377,6 +388,10 @@ function ozp_plugin_options() {
         <tr valign="top">
         <th scope="row">OzPlayer base URL</th>
         <td><input type="text" name="ozplayer_base" value="<?php echo esc_attr( get_option('ozplayer_base') ); ?>" /></td>
+        </tr>
+        <tr valign="top">
+        <th scope="row">Use commercial version?</th>
+        <td><input type="checkbox" name="ozplayer_commercial" value="1"<?php checked( 1 == get_option('ozplayer_commercial') ); ?> /></td>
         </tr>
         <tr valign="top">
         <th scope="row">config.js URL</th>
