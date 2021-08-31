@@ -3,7 +3,7 @@
  * Plugin Name: OzPlayer
  * Plugin URI: http://oz-player.com
  * Description: OzPlayer support for WordPress
- * Version: 4.1
+ * Version: 4.1.1
  * Author: AccessibilityOz
  * Author URI: https://www.accessibilityoz.com/
  * License: GPL2
