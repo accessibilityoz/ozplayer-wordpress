@@ -94,6 +94,7 @@ function ozp_video_shortcode($attr, $content = '')
     $ozplayer_base = get_option('ozplayer_base');
     $config_js = get_option('ozplayer_config_js');
     $transcript_heading = get_option('ozplayer_transcript_heading');
+    $commercial = get_option('ozplayer_commercial');
 
     /**
      * Filter the default video shortcode output.
@@ -214,7 +215,6 @@ function ozp_video_shortcode($attr, $content = '')
      */
 
     if (!$commercial) {
-        $ozplayer_base = "https://ozplayer.global.ssl.fastly.net/3.0";
         $ozplayer_script = "ozplayer.free.js";
     } else {
         $ozplayer_script = "ozplayer.min.js";
@@ -455,6 +455,5 @@ function ozp_plugin_options()
     </div>
     <?php
 }
-
 
 ?>
